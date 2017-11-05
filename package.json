@@ -1,0 +1,33 @@
+{
+  "name": "Trident",
+  "version": "1.0.0",
+  "description": "Chrome extension that improves the interface of the music review website Pitchfork",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "dependencies": {
+    "jquery": "^3.2.1"
+  },
+  "devDependencies": {
+    "@types/chrome": "0.0.52",
+    "@types/jquery": "^3.2.16",
+    "@types/youtube": "0.0.31",
+    "eslint": "^4.5.0",
+    "ts-loader": "^3.1.1",
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.1",
+    "webpack": "^3.8.1"
+  },
+  "scripts": {
+    "build": "./node_modules/.bin/webpack",
+    "watch": "./node_modules/.bin/webpack -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jmbeach/trident"
+  },
+  "author": "Jared Beach",
+  "license": "ISC",
+  "homepage": "https://github.com/jmbeach/trident"
+}
