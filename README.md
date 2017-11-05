@@ -8,7 +8,7 @@ Chrome extension which provides enhancements for the music review website
 - Load YouTube video for currently viewed album review
     + Gets the video by scraping the page for the furthest scrolled review
       available.
-          + Can be refreshed by clicking extension icon
+        + Can be refreshed by clicking extension icon
     + ![Load YouTube video example](./meta/load-youtube-video.png)
 - Filter the Pitchfork review list by score, published year, and genre
     + Also displays score and year published on the page, which is not
@@ -26,7 +26,8 @@ To build:
 
 1. Clone the repository
 2. Run `npm install`
-3. Run `npm run-script build` or `npm run-script watch`
+3. Run `bower install`
+4. Run `npm run-script build` or `npm run-script watch`
 
 # Run
 
@@ -60,14 +61,14 @@ Also, Bower installs dependent JavaScript libraries into `dist/js/lib`.
     + Use spotify to get entire album if available and is user preference
     + Make loading more user-interactive as right now it doesn't request and
       it's not intuitive that it loads the furthest scrolled review.
-          + For example, if you scroll back up the page, it should offer
-            a prompt to let you switch songs.
+        + For example, if you scroll back up the page, it should offer
+          a prompt to let you switch songs.
     + Need a user-interactive way to hide the YouTube videos
 - Filtering
     + Filtering currently uses a timer and determines if necessary to show
       or hide items if new items have appeared after scrolling.
-          + Needs to change to only happen if more reviews appear on the
-            page or if the custom UI input changes.
+        + Needs to change to only happen if more reviews appear on the
+          page or if the custom UI input changes.
 - Better Icon Art
     + Currently just have an icon of a pitchfork. Want a cool trident.
     + No icon for the large image yet.
