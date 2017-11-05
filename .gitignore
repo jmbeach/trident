@@ -2,6 +2,8 @@ dist/js
 src/config/config.ts
 *.swp
 .DS_Store
+*.pem
+*.crx
 # Created by https://www.gitignore.io/api/node
 
 ### Node ###
