@@ -22,7 +22,7 @@ export class Trident {
         self.eventMonitor.onEnterReview = () => {
             setTimeout(() => {
                 self.findOnYouTube();
-            }, 200);
+            }, 800);
         };
 
         self.eventMonitor.onEnterReviewList = () => {
