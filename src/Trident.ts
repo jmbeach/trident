@@ -2,6 +2,7 @@ import * as $ from "jquery";
 import {TridentConfig} from "./config/config";
 import {PageType} from "./PageType";
 import {Review} from "./Review";
+import {UiEventMonitor} from "./UiEventMonitor";
 export class Trident {
     public minScore: number;
     public minYear: number;
@@ -10,12 +11,21 @@ export class Trident {
     public processed: { [link: string]: Review; };
     private config: TridentConfig = new TridentConfig();
     private YT_BASE_URL: string = "https://www.googleapis.com/youtube/v3/search/";
+    private eventMonitor: UiEventMonitor;
 
     constructor() {
         const self = this;
         self.minScore = 7.0;
         self.minYear = 2017;
         self.processed = {};
+        self.eventMonitor = new UiEventMonitor();
+        self.eventMonitor.onEnterReview = () => {
+            debugger;
+        };
+
+        self.eventMonitor.onExitReview = () => {
+            debugger;
+        };
 
         window.addEventListener("message", (event) => {
             if (event.source !== window) {
