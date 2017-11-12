@@ -14,32 +14,12 @@ export class UiEventMonitor {
 
     public bindClick(selector) {
         const self = this;
+        window.onpopstate = () => {
+            self.detectChanges();
+        };
+
         $(selector).click(() => {
-            self.locationHasChanged((didChange) => {
-                if (!didChange) {
-                    return;
-                }
-
-                if (self.didEnterReview()) {
-                    self.onEnterReview();
-                }
-
-                if (self.didExitReview()) {
-                    if (self.onExitReview) {
-                        self.onExitReview();
-                    }
-                }
-
-                if (self.didEnterReviewList()) {
-                    self.onEnterReviewList();
-                }
-
-                if (self.didExitReviewList()) {
-                    self.onExitReviewList();
-                }
-
-                self.updateCurrentLocation();
-            });
+            self.detectChanges();
         });
     }
 
@@ -51,6 +31,35 @@ export class UiEventMonitor {
         if (this.didEnterReviewList()) {
             this.onEnterReviewList();
         }
+    }
+
+    private detectChanges() {
+        const self = this;
+        self.locationHasChanged((didChange) => {
+            if (!didChange) {
+                return;
+            }
+
+            if (self.didEnterReview()) {
+                self.onEnterReview();
+            }
+
+            if (self.didExitReview()) {
+                if (self.onExitReview) {
+                    self.onExitReview();
+                }
+            }
+
+            if (self.didEnterReviewList()) {
+                self.onEnterReviewList();
+            }
+
+            if (self.didExitReviewList()) {
+                self.onExitReviewList();
+            }
+
+            self.updateCurrentLocation();
+        });
     }
 
     private locationHasChanged(callback) {
