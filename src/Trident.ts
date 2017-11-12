@@ -2,6 +2,7 @@ import * as $ from "jquery";
 import {TridentConfig} from "./config/config";
 import {PageType} from "./PageType";
 import {Review} from "./Review";
+import {UiEventMonitor} from "./UiEventMonitor";
 export class Trident {
     public minScore: number;
     public minYear: number;
@@ -10,12 +11,31 @@ export class Trident {
     public processed: { [link: string]: Review; };
     private config: TridentConfig = new TridentConfig();
     private YT_BASE_URL: string = "https://www.googleapis.com/youtube/v3/search/";
+    private eventMonitor: UiEventMonitor;
 
     constructor() {
         const self = this;
         self.minScore = 7.0;
         self.minYear = 2017;
         self.processed = {};
+        self.eventMonitor = new UiEventMonitor();
+        self.eventMonitor.onEnterReview = () => {
+            setTimeout(() => {
+                self.findOnYouTube();
+            }, 200);
+        };
+
+        self.eventMonitor.onEnterReviewList = () => {
+            setTimeout(() => {
+                self.insertFilterBoxes();
+                self.processed = {};
+                self.refreshCustomUi();
+            }, 200);
+        };
+
+        self.eventMonitor.onExitReviewList = () => {
+            self.destroyFilterControls();
+        };
 
         window.addEventListener("message", (event) => {
             if (event.source !== window) {
@@ -49,15 +69,7 @@ export class Trident {
 
         chrome.runtime.onMessage.addListener((request) => {
             if (request.PF === "refresh") {
-                const artist = $(".artists a").last().text();
-                const album = $(".review-title").last().text();
-                const query = self.makeQueryObject(album + " " + artist);
-                $("#player").remove();
-                self.createPlayer();
-                self.getDataFromApi(query, (apiData) => {
-                    const searchResults = apiData;
-                    self.makePlayer(searchResults.items[0].id.videoId);
-                });
+                self.findOnYouTube();
             }
         });
     }
@@ -65,12 +77,13 @@ export class Trident {
     public refreshCustomUi() {
         const self = this;
         self.foreachAlbumPage((link, album, page) => {
-            if (typeof(page) !== "undefined" &&
-                !self.isProcessed(link)) {
+            if (typeof(page) !== "undefined"
+                && !self.isProcessed(link)) {
                 self.processed[link] = new Review();
                 self.processScore(link, page);
                 self.processPublishedDate(link, page);
                 self.processGenre(link, page);
+                self.eventMonitor.bindClick("a[href='" + link + "']");
             }
 
             self.filterGenre(link);
@@ -78,6 +91,11 @@ export class Trident {
             self.filterPublishedDate(link);
             self.setVisibility(link);
         });
+    }
+
+    public destroyFilterControls() {
+        const script = "destroyFilterControls();";
+        this.insertScript(script);
     }
 
     public makePlayer(id: string) {
@@ -102,17 +120,15 @@ export class Trident {
 
     public findOnYouTube() {
         const self = this;
-        if (self.getPageType() !== PageType.Review) {
-            return;
-        }
 
-        const artist = $(".artists a").first().text();
-        const album = $(".review-title").first().text();
+        const artist = $(".artists a").last().text();
+        const album = $(".review-title").last().text();
         const query = self.makeQueryObject(album + " " + artist);
-
+        $("#player").remove();
         self.createPlayer();
-        self.getDataFromApi(query, (data) => {
-            self.makePlayer(data.items[0].id.videoId);
+        self.getDataFromApi(query, (apiData) => {
+            const searchResults = apiData;
+            self.makePlayer(searchResults.items[0].id.videoId);
         });
     }
 
@@ -127,6 +143,10 @@ export class Trident {
 
     public getDataFromApi(query, callback) {
         $.getJSON(this.YT_BASE_URL, query, callback);
+    }
+
+    public firstPageLoad() {
+        this.eventMonitor.initialDetect();
     }
 
     private makeQueryObject(searchTerm) {
