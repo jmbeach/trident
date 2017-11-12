@@ -10,6 +10,7 @@ export class UiEventMonitor {
     constructor() {
         const self = this;
         self.currentLocation = window.location.href;
+
         $("a").click(() => {
             self.locationHasChanged((didChange) => {
                 if (!didChange) {
@@ -35,6 +36,16 @@ export class UiEventMonitor {
                 self.updateCurrentLocation();
             });
         });
+    }
+
+    public initialDetect() {
+        if (this.didEnterReview()) {
+            this.onEnterReview();
+        }
+
+        if (this.didEnterReviewList()) {
+            this.onEnterReviewList();
+        }
     }
 
     private locationHasChanged(callback) {

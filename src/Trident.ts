@@ -20,18 +20,22 @@ export class Trident {
         self.processed = {};
         self.eventMonitor = new UiEventMonitor();
         self.eventMonitor.onEnterReview = () => {
+            // TODO: implement
             debugger;
         };
 
         self.eventMonitor.onExitReview = () => {
+            // TODO: implement
             debugger;
         };
 
         self.eventMonitor.onEnterReviewList = () => {
+            // TODO: implement
             debugger;
         };
 
         self.eventMonitor.onExitReviewList = () => {
+            // TODO: implement
             debugger;
         };
 
@@ -145,6 +149,10 @@ export class Trident {
 
     public getDataFromApi(query, callback) {
         $.getJSON(this.YT_BASE_URL, query, callback);
+    }
+
+    public firstPageLoad() {
+        this.eventMonitor.initialDetect();
     }
 
     private makeQueryObject(searchTerm) {
