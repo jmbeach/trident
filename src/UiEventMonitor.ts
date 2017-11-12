@@ -8,10 +8,13 @@ export class UiEventMonitor {
     private currentLocation: string;
 
     constructor() {
-        const self = this;
-        self.currentLocation = window.location.href;
+        this.currentLocation = window.location.href;
+        this.bindClick("a");
+    }
 
-        $("a").click(() => {
+    public bindClick(selector) {
+        const self = this;
+        $(selector).click(() => {
             self.locationHasChanged((didChange) => {
                 if (!didChange) {
                     return;
@@ -22,7 +25,9 @@ export class UiEventMonitor {
                 }
 
                 if (self.didExitReview()) {
-                    self.onExitReview();
+                    if (self.onExitReview) {
+                        self.onExitReview();
+                    }
                 }
 
                 if (self.didEnterReviewList()) {
@@ -52,7 +57,7 @@ export class UiEventMonitor {
         const self = this;
         setTimeout(() => {
             callback(window.location.href !== self.currentLocation);
-        }, 100);
+        }, 200);
     }
 
     private updateCurrentLocation() {
@@ -61,25 +66,25 @@ export class UiEventMonitor {
 
     private didEnterReview() {
         // new location contains something after reviews/albums
-        const matches = window.location.href.match(/reviews\/albums\/.+/g);
+        const matches = window.location.href.match(/reviews\/albums\/.+\//g);
         return matches && matches.length > 0;
     }
 
     private didEnterReviewList() {
         // new location contains nothing after reviews/albums
-        const matches = window.location.href.match(/reviews\/albums\/$/g);
+        const matches = window.location.href.match(/(reviews\/albums\/$)|(reviews\/albums\/\?page.+)/g);
         return matches && matches.length > 0;
     }
 
     private didExitReviewList() {
         // old location contains nothing after reviews/albums
-        const matches = this.currentLocation.match(/reviews\/albums\/$/g);
+        const matches = this.currentLocation.match(/(reviews\/albums\/$)|(reviews\/albums\/\?page.+)/g);
         return matches && matches.length > 0;
     }
 
     private didExitReview() {
         // old location contains something after reviews/albums
-        const matches = this.currentLocation.match(/reviews\/albums\/.+/g);
+        const matches = this.currentLocation.match(/reviews\/albums\/.+\//g);
         return matches && matches.length > 0;
     }
 }

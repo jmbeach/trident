@@ -20,20 +20,21 @@ export class Trident {
         self.processed = {};
         self.eventMonitor = new UiEventMonitor();
         self.eventMonitor.onEnterReview = () => {
-            self.findOnYouTube();
-        };
-
-        self.eventMonitor.onExitReview = () => {
-            // TODO: implement
+            setTimeout(() => {
+                self.findOnYouTube();
+            }, 200);
         };
 
         self.eventMonitor.onEnterReviewList = () => {
-            self.insertFilterBoxes();
-            self.refreshCustomUi();
+            setTimeout(() => {
+                self.insertFilterBoxes();
+                self.processed = {};
+                self.refreshCustomUi();
+            }, 200);
         };
 
         self.eventMonitor.onExitReviewList = () => {
-            // TODO: implement
+            self.destroyFilterControls();
         };
 
         window.addEventListener("message", (event) => {
@@ -68,15 +69,7 @@ export class Trident {
 
         chrome.runtime.onMessage.addListener((request) => {
             if (request.PF === "refresh") {
-                const artist = $(".artists a").last().text();
-                const album = $(".review-title").last().text();
-                const query = self.makeQueryObject(album + " " + artist);
-                $("#player").remove();
-                self.createPlayer();
-                self.getDataFromApi(query, (apiData) => {
-                    const searchResults = apiData;
-                    self.makePlayer(searchResults.items[0].id.videoId);
-                });
+                self.findOnYouTube();
             }
         });
     }
@@ -84,12 +77,13 @@ export class Trident {
     public refreshCustomUi() {
         const self = this;
         self.foreachAlbumPage((link, album, page) => {
-            if (typeof(page) !== "undefined" &&
-                !self.isProcessed(link)) {
+            if (typeof(page) !== "undefined"
+                && !self.isProcessed(link)) {
                 self.processed[link] = new Review();
                 self.processScore(link, page);
                 self.processPublishedDate(link, page);
                 self.processGenre(link, page);
+                self.eventMonitor.bindClick("a[href='" + link + "']");
             }
 
             self.filterGenre(link);
@@ -97,6 +91,11 @@ export class Trident {
             self.filterPublishedDate(link);
             self.setVisibility(link);
         });
+    }
+
+    public destroyFilterControls() {
+        const script = "destroyFilterControls();";
+        this.insertScript(script);
     }
 
     public makePlayer(id: string) {
@@ -121,17 +120,15 @@ export class Trident {
 
     public findOnYouTube() {
         const self = this;
-        if (self.getPageType() !== PageType.Review) {
-            return;
-        }
 
-        const artist = $(".artists a").first().text();
-        const album = $(".review-title").first().text();
+        const artist = $(".artists a").last().text();
+        const album = $(".review-title").last().text();
         const query = self.makeQueryObject(album + " " + artist);
-
+        $("#player").remove();
         self.createPlayer();
-        self.getDataFromApi(query, (data) => {
-            self.makePlayer(data.items[0].id.videoId);
+        self.getDataFromApi(query, (apiData) => {
+            const searchResults = apiData;
+            self.makePlayer(searchResults.items[0].id.videoId);
         });
     }
 
