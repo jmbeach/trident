@@ -1,7 +1,7 @@
 import * as $ from "jquery";
 export class UiEventMonitor {
-    public onEnterReviewsList: () => void;
-    public onExitReviewsList: () => void;
+    public onEnterReviewList: () => void;
+    public onExitReviewList: () => void;
     public onEnterReview: () => void;
     public onExitReview: () => void;
 
@@ -23,6 +23,15 @@ export class UiEventMonitor {
                 if (self.didExitReview()) {
                     self.onExitReview();
                 }
+
+                if (self.didEnterReviewList()) {
+                    self.onEnterReviewList();
+                }
+
+                if (self.didExitReviewList()) {
+                    self.onExitReviewList();
+                }
+
                 self.updateCurrentLocation();
             });
         });
@@ -42,6 +51,18 @@ export class UiEventMonitor {
     private didEnterReview() {
         // new location contains something after reviews/albums
         const matches = window.location.href.match(/reviews\/albums\/.+/g);
+        return matches && matches.length > 0;
+    }
+
+    private didEnterReviewList() {
+        // new location contains nothing after reviews/albums
+        const matches = window.location.href.match(/reviews\/albums\/$/g);
+        return matches && matches.length > 0;
+    }
+
+    private didExitReviewList() {
+        // old location contains nothing after reviews/albums
+        const matches = this.currentLocation.match(/reviews\/albums\/$/g);
         return matches && matches.length > 0;
     }
 

@@ -27,6 +27,14 @@ export class Trident {
             debugger;
         };
 
+        self.eventMonitor.onEnterReviewList = () => {
+            debugger;
+        };
+
+        self.eventMonitor.onExitReviewList = () => {
+            debugger;
+        };
+
         window.addEventListener("message", (event) => {
             if (event.source !== window) {
                 return;
