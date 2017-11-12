@@ -20,23 +20,20 @@ export class Trident {
         self.processed = {};
         self.eventMonitor = new UiEventMonitor();
         self.eventMonitor.onEnterReview = () => {
-            // TODO: implement
-            debugger;
+            self.findOnYouTube();
         };
 
         self.eventMonitor.onExitReview = () => {
             // TODO: implement
-            debugger;
         };
 
         self.eventMonitor.onEnterReviewList = () => {
-            // TODO: implement
-            debugger;
+            self.insertFilterBoxes();
+            self.refreshCustomUi();
         };
 
         self.eventMonitor.onExitReviewList = () => {
             // TODO: implement
-            debugger;
         };
 
         window.addEventListener("message", (event) => {
