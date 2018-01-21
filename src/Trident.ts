@@ -250,7 +250,7 @@ export class Trident {
     }
 
     private foreachAlbumPage(callback) {
-        const albums = $(".album-link");
+        const albums = $(".review__link");
         for (let i = 0; i < albums.length; i++) {
             const album = $(albums.get(i));
             const link = album.attr("href");
