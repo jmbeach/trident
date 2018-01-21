@@ -16,7 +16,7 @@ export class Trident {
     constructor() {
         const self = this;
         self.minScore = 7.0;
-        self.minYear = new Date().getFullYear();
+        self.minYear = new Date().getFullYear() - 1;
         self.processed = {};
         self.eventMonitor = new UiEventMonitor();
         self.eventMonitor.onEnterReview = () => {
@@ -224,9 +224,10 @@ export class Trident {
         }
 
         review.publishedDate.setProcessed();
-        const publishedYearObject = page.find("time").first();
-        const publishedYearText = new Date(publishedYearObject.text());
-        const publishedYear = publishedYearText.getFullYear();
+        const publishedYearObject = page.find(".single-album-tombstone__meta-year").first();
+        const publishedYearParts = publishedYearObject.text().split(" ");
+        const publishedYearString = publishedYearParts[publishedYearParts.length - 1];
+        const publishedYear = parseInt(publishedYearString, 10);
 
         review.publishedDate.value = publishedYear;
 

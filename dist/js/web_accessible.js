@@ -74,9 +74,9 @@ function createYearFilterBox() {
     box.style.float = 'left'
     box.id = 'year-filter'
     box.step = '1'
-    box.max = '2018'
+    box.max = (new Date()).getFullYear() + 1
     box.min = '1900'
-    box.value = '2017'
+    box.value = (new Date()).getFullYear() - 1
     box.onchange = onYearFilterChange
     return box
 }
