@@ -16,7 +16,7 @@ export class Trident {
     constructor() {
         const self = this;
         self.minScore = 7.0;
-        self.minYear = 2017;
+        self.minYear = new Date().getFullYear();
         self.processed = {};
         self.eventMonitor = new UiEventMonitor();
         self.eventMonitor.onEnterReview = () => {
@@ -224,10 +224,9 @@ export class Trident {
         }
 
         review.publishedDate.setProcessed();
-        const publishedYearObject = page.find(".year").first();
-        let publishedYearText = publishedYearObject.text();
-        publishedYearText = publishedYearText.substring(2);
-        const publishedYear = parseInt(publishedYearText, 10);
+        const publishedYearObject = page.find("time").first();
+        const publishedYearText = new Date(publishedYearObject.text());
+        const publishedYear = publishedYearText.getFullYear();
 
         review.publishedDate.value = publishedYear;
 
