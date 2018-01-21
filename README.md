@@ -1,4 +1,6 @@
-# Trident
+Trident [![Build status](https://travis-ci.org/jmbeach/trident.svg?branch=travis-setup)](https://travis-ci.org/jmbeach/trident)
+
+===
 
 Chrome extension which provides enhancements for the music review website
 [Pitchfork.com](https://pitchfork.com)
