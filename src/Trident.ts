@@ -121,8 +121,8 @@ export class Trident {
     public findOnYouTube() {
         const self = this;
 
-        const artist = $(".artists a").last().text();
-        const album = $(".review-title").last().text();
+        const artist = $(".artist-links a").last().text();
+        const album = $(".single-album-tombstone__review-title").last().text();
         const query = self.makeQueryObject(album + " " + artist);
         $("#player").remove();
         self.createPlayer();
