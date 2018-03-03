@@ -30,6 +30,17 @@ To build:
 3. Run `bower install`
 4. Run `npm run-script build` or `npm run-script watch`
 
+The project requires that you specify a YouTube API key. To do so, create
+a file with contents like the following under `src/config/config.ts`
+
+```
+export class TridentConfig {
+    public youtubeApiKey: string = "<your-youtube-api-key>";
+}
+```
+
+You can get a YouTube API key [here](https://console.developers.google.com/apis/dashboard).
+
 # Run
 
 To use Trident, open the Chrome extensions menu and click *Load unpacked
