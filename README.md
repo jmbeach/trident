@@ -33,7 +33,7 @@ To build:
 The project requires that you specify a YouTube API key. To do so, create
 a file with contents like the following under `src/config/config.ts`
 
-```
+```js
 export class TridentConfig {
     public youtubeApiKey: string = "<your-youtube-api-key>";
 }
