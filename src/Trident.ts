@@ -3,6 +3,7 @@ import {TridentConfig} from "./config/config";
 import {PageType} from "./PageType";
 import {Review} from "./Review";
 import {UiEventMonitor} from "./UiEventMonitor";
+import {DomUtils} from "./DomUtils";
 export class Trident {
     public minScore: number;
     public minYear: number;
@@ -12,6 +13,7 @@ export class Trident {
     private config: TridentConfig = new TridentConfig();
     private YT_BASE_URL: string = "https://www.googleapis.com/youtube/v3/search/";
     private eventMonitor: UiEventMonitor;
+    private domUtils : DomUtils;
 
     constructor() {
         const self = this;
@@ -19,6 +21,7 @@ export class Trident {
         self.minYear = new Date().getFullYear() - 1;
         self.processed = {};
         self.eventMonitor = new UiEventMonitor();
+        self.domUtils = new DomUtils();
         self.eventMonitor.onEnterReview = () => {
             setTimeout(() => {
                 self.findOnYouTube();
@@ -121,8 +124,29 @@ export class Trident {
     public findOnYouTube() {
         const self = this;
 
-        const artist = $(".artist-links a").last().text();
-        const album = $(".single-album-tombstone__review-title").last().text();
+        const artists = document.querySelectorAll(".artist-links a");
+        let artistLink = artists[0]
+        for (let i = 0; i < artists.length; i++) {
+            const link = artists[i];
+            const reviewClass = "review-detail";
+            const linkView = self.domUtils.parentsUntilClass(
+                link,
+                reviewClass)
+                .getBoundingClientRect();
+            const artistView = self.domUtils.parentsUntilClass(
+                artistLink,
+                reviewClass)
+                .getBoundingClientRect()
+
+            // top is closest to zero
+            if (Math.abs(linkView.top) < Math.abs(artistView.top)) {
+                artistLink = link
+            }
+        }
+
+        const artist = artistLink.innerHTML;
+        const headings = self.domUtils.parentsUntilClassContains(artistLink, 'headings')
+        const album = headings.children[1].innerHTML;
         const query = self.makeQueryObject(album + " " + artist);
         $("#player").remove();
         self.createPlayer();
