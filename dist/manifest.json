@@ -7,7 +7,7 @@
       "js": [
         "js/vendor.js",
         "js/content_script.js",
-        "js/lib/iframe_api.min.js"
+        "js/lib/youtube-iframe-api/youtube.iframe-api.js"
       ],
       "matches": ["*://*.pitchfork.com/*"]
     }
