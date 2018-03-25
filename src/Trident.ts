@@ -24,6 +24,7 @@ export class Trident {
         self.domUtils = new DomUtils();
         self.eventMonitor.onEnterReview = () => {
             setTimeout(() => {
+                self.insertReviewControls();
                 self.findOnYouTube();
             }, 800);
         };
@@ -67,6 +68,14 @@ export class Trident {
                 // reprocess all albums
                 self.markAllUnprocessed(self.processed);
                 self.refreshCustomUi();
+            }
+
+            if (event.data.type && event.data.type === "NextAlbum") {
+                self.scrollToNextAlbum();
+            }
+
+            if (event.data.type && event.data.type === "PreviousAlbum") {
+                self.scrollToPreviousAlbum();
             }
         });
 
@@ -121,9 +130,16 @@ export class Trident {
         this.insertScript("insertFilterBoxes();");
     }
 
-    public findOnYouTube() {
-        const self = this;
+    public insertReviewControls() {
+        if (this.getPageType() !== PageType.Review) {
+            return;
+        }
 
+        this.insertScript("insertReviewControls();");
+    }
+
+    public getCurrentArtistLink() {
+        const self = this;
         const artists = document.querySelectorAll(".artist-links a");
         let artistLink = artists[0]
         for (let i = 0; i < artists.length; i++) {
@@ -144,6 +160,12 @@ export class Trident {
             }
         }
 
+        return artistLink;
+    }
+
+    public findOnYouTube() {
+        const self = this;
+        const artistLink = self.getCurrentArtistLink();
         const artist = artistLink.innerHTML;
         const headings = self.domUtils.parentsUntilClassContains(artistLink, 'headings')
         const album = headings.children[1].innerHTML;
@@ -154,6 +176,39 @@ export class Trident {
             const searchResults = apiData;
             self.makePlayer(searchResults.items[0].id.videoId);
         });
+    }
+
+    public scrollToPreviousAlbum() {
+        const currentArtistLink = this.getCurrentArtistLink();
+        const artistLinks = document.querySelectorAll(".artist-links > li:first-child > a");
+        let previousArtistLink = currentArtistLink;
+        for (let i = 0; i < artistLinks.length; i++) {
+            if (artistLinks[i] === currentArtistLink && i != 0) {
+                previousArtistLink = artistLinks[i - 1];
+            }
+        }
+
+        this.domUtils.parentsUntilClass(previousArtistLink, "review-detail").scrollIntoView();
+    }
+
+    public scrollToNextAlbum() {
+        const currentArtistLink = this.getCurrentArtistLink();
+        const artistLinks = document.querySelectorAll(".artist-links > li:first-child > a");
+        let nextArtistLink = currentArtistLink;
+        for (let i = 0; i < artistLinks.length; i++) {
+            if (artistLinks[i] === currentArtistLink) {
+                if (artistLinks.length - 1 !== i) {
+                    nextArtistLink = artistLinks[i + 1];
+                }
+            }
+        }
+
+        // if we haven't loaded the next artist link yet
+        if (currentArtistLink === nextArtistLink) {
+            this.scrollToBottom();
+        } else {
+            this.domUtils.parentsUntilClass(nextArtistLink, "review-detail").scrollIntoView();
+        }
     }
 
     public createPlayer() {
@@ -187,6 +242,10 @@ export class Trident {
 
     private insertPublishedYear(link, publishedYear) {
         this.insertScript("insertPublishedYear('" + link + "', '" + publishedYear + "')");
+    }
+
+    private scrollToBottom() {
+        this.insertScript("scrollToBottom();");
     }
 
     private insertScore(link, score) {
