@@ -32,6 +32,7 @@ function onScoreFilterChange (event) {
         type: 'TridentScore',
         text: event.target.value
     }
+
     window.postMessage(data, '*')
 }
 
@@ -40,6 +41,7 @@ function onYearFilterChange (event) {
         type: 'TridentYear',
         text: event.target.value
     }
+
     window.postMessage(data, '*')
 }
 
@@ -48,7 +50,34 @@ function onGenreFilterChange (event) {
         type: 'TridentGenre',
         text: event.target.value
     }
+
     window.postMessage(data, '*')
+}
+
+function onNextAlbumBtnClick (event) {
+    var data = {
+        type: 'NextAlbum'
+    }
+
+    window.postMessage(data, '*')
+}
+
+function createNextAlbumButton() {
+	var button = document.createElement('input')
+	button.setAttribute('type', 'button')
+	button.value = '>'
+	button.style.position = 'fixed'
+	button.style.right = '1.5em'
+	button.style.width = '1.5em'
+	button.style.height = '1.2em'
+	button.style.backgroundColor = '#1a1a1a'
+	button.style.color = '#595959'
+	button.style.font = '4.2em "Arial", sans-serif'
+	button.style.top = '2em'
+	button.style.border = 'none'
+	button.style.zIndex = '100'
+  button.onclick = onNextAlbumBtnClick
+	return button
 }
 
 function createScoreFilterBox() {
@@ -112,6 +141,11 @@ function insertFilterBoxes() {
     nav.appendChild(container)
 }
 
+function insertReviewControls() {
+    var container = document.getElementsByClassName('infinite-container')
+    container[0].children[0].appendChild(createNextAlbumButton())
+}
+
 function insertPublishedYear(link, publishedYear) {
     var album = document.querySelector('.review__link[href*="' + link + '"]')
     var yearToInsert = document.createElement('span')
@@ -143,4 +177,22 @@ function unFilterAlbum(link) {
 function destroyFilterControls() {
     var controls = document.getElementById('trident-controls')
     controls.parentNode.removeChild(controls)
+}
+
+function scrollToBottom() {
+    var container = document.getElementsByClassName('infinite-container')[0]
+    window.scroll(0, container.scrollHeight)
+    setTimeout(function() {
+      var links = document.querySelectorAll('.artist-links > li:first-child > a');
+      var latest = links[links.length - 1]
+        .parentElement
+        .parentElement
+        .parentElement
+        .parentElement
+        .parentElement
+        .parentElement
+        .parentElement
+        .parentElement
+      latest.scrollIntoView()
+    }, 2000)
 }
