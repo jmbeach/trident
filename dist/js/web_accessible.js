@@ -62,6 +62,14 @@ function onNextAlbumBtnClick (event) {
     window.postMessage(data, '*')
 }
 
+function onPreviousAlbumBtnClick (event) {
+    var data = {
+        type: 'PreviousAlbum'
+    }
+
+    window.postMessage(data, '*')
+}
+
 function createNextAlbumButton() {
 	var button = document.createElement('input')
 	button.setAttribute('type', 'button')
@@ -73,11 +81,31 @@ function createNextAlbumButton() {
 	button.style.backgroundColor = '#1a1a1a'
 	button.style.color = '#595959'
 	button.style.font = '4.2em "Arial", sans-serif'
-	button.style.top = '2em'
+	button.style.top = '3.3em'
 	button.style.border = 'none'
 	button.style.zIndex = '100'
+  button.setAttribute('title', 'Go to next review')
   button.onclick = onNextAlbumBtnClick
 	return button
+}
+
+function createPreviousAlbumButton() {
+    var button = document.createElement('input')
+    button.setAttribute('type', 'button')
+    button.value = '<'
+    button.style.position = 'fixed'
+    button.style.right = '1.5em'
+    button.style.width = '1.5em'
+    button.style.height = '1.2em'
+    button.style.backgroundColor = '#1a1a1a'
+    button.style.color = '#595959'
+    button.style.font = '4.2em "Arial", sans-serif'
+    button.style.top = '2em'
+    button.style.border = 'none'
+    button.style.zIndex = '100'
+    button.setAttribute('title', 'Go to previous review')
+    button.onclick = onPreviousAlbumBtnClick
+    return button
 }
 
 function createScoreFilterBox() {
@@ -144,6 +172,7 @@ function insertFilterBoxes() {
 function insertReviewControls() {
     var container = document.getElementsByClassName('infinite-container')
     container[0].children[0].appendChild(createNextAlbumButton())
+    container[0].children[0].appendChild(createPreviousAlbumButton())
 }
 
 function insertPublishedYear(link, publishedYear) {

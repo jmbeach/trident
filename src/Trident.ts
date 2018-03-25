@@ -73,6 +73,10 @@ export class Trident {
             if (event.data.type && event.data.type === "NextAlbum") {
                 self.scrollToNextAlbum();
             }
+
+            if (event.data.type && event.data.type === "PreviousAlbum") {
+                self.scrollToPreviousAlbum();
+            }
         });
 
         chrome.runtime.onMessage.addListener((request) => {
@@ -172,6 +176,19 @@ export class Trident {
             const searchResults = apiData;
             self.makePlayer(searchResults.items[0].id.videoId);
         });
+    }
+
+    public scrollToPreviousAlbum() {
+        const currentArtistLink = this.getCurrentArtistLink();
+        const artistLinks = document.querySelectorAll(".artist-links > li:first-child > a");
+        let previousArtistLink = currentArtistLink;
+        for (let i = 0; i < artistLinks.length; i++) {
+            if (artistLinks[i] === currentArtistLink && i != 0) {
+                previousArtistLink = artistLinks[i - 1];
+            }
+        }
+
+        this.domUtils.parentsUntilClass(previousArtistLink, "review-detail").scrollIntoView();
     }
 
     public scrollToNextAlbum() {
