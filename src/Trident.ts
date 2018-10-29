@@ -4,6 +4,7 @@ import {PageType} from "./PageType";
 import {Review} from "./Review";
 import {UiEventMonitor} from "./UiEventMonitor";
 import {DomUtils} from "./DomUtils";
+import { YouTubeClient } from "./YouTubeClient";
 export class Trident {
     public minScore: number;
     public minYear: number;
@@ -11,9 +12,9 @@ export class Trident {
     public publishedYear: number;
     public processed: { [link: string]: Review; };
     private config: TridentConfig = new TridentConfig();
-    private YT_BASE_URL: string = "https://www.googleapis.com/youtube/v3/search/";
     private eventMonitor: UiEventMonitor;
     private domUtils : DomUtils;
+    private youtubeClient: YouTubeClient = new YouTubeClient();
 
     constructor() {
         const self = this;
@@ -172,7 +173,7 @@ export class Trident {
         const query = self.makeQueryObject(album + " " + artist);
         $("#player").remove();
         self.createPlayer();
-        self.getDataFromApi(query, (apiData) => {
+        self.youtubeClient.search(query, (apiData) => {
             const searchResults = apiData;
             self.makePlayer(searchResults.items[0].id.videoId);
         });
@@ -218,10 +219,6 @@ export class Trident {
         playerDiv.style.bottom = "10px";
         playerDiv.style.right = "10px";
         document.body.appendChild(playerDiv);
-    }
-
-    public getDataFromApi(query, callback) {
-        $.getJSON(this.YT_BASE_URL, query, callback);
     }
 
     public firstPageLoad() {
