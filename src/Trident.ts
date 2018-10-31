@@ -8,7 +8,6 @@ import { YouTubeClient } from "./YouTubeClient";
 export class Trident {
     public minScore: number;
     public minYear: number;
-    public genreFilter: string;
     public publishedYear: number;
     public processed: { [link: string]: Review; };
     private config: TridentConfig = new TridentConfig();
@@ -63,14 +62,6 @@ export class Trident {
                 self.refreshCustomUi();
             }
 
-            if (event.data.type && event.data.type === "TridentGenre") {
-                self.genreFilter = event.data.text;
-
-                // reprocess all albums
-                self.markAllUnprocessed(self.processed);
-                self.refreshCustomUi();
-            }
-
             if (event.data.type && event.data.type === "NextAlbum") {
                 self.scrollToNextAlbum();
             }
@@ -95,11 +86,9 @@ export class Trident {
                 self.processed[link] = new Review();
                 self.processScore(link, page);
                 self.processPublishedDate(link, page);
-                self.processGenre(link, page);
                 self.eventMonitor.bindClick("a[href='" + link + "']");
             }
 
-            self.filterGenre(link);
             self.filterScore(link);
             self.filterPublishedDate(link);
             self.setVisibility(link);
@@ -362,32 +351,6 @@ export class Trident {
         } else {
             review.score.setUnfiltered();
         }
-    }
-
-    private filterGenre(link) {
-        const review = this.getReview(link);
-        if (!this.genreFilter) {
-            review.genre.setUnfiltered();
-        } else if (review.genre.value.toUpperCase().indexOf(
-                this.genreFilter.toUpperCase()) < 0) {
-            review.genre.setFiltered();
-        } else {
-            review.genre.setUnfiltered();
-        }
-    }
-
-    private processGenre(link, page) {
-        const review = this.getReview(link);
-        if (review.genre.isProcessed) {
-            return;
-        }
-
-        review.genre.setProcessed();
-        const $genre = page.find(".genre-list__link");
-        const genre = $genre.text();
-        review.genre.value = genre;
-
-        this.filterGenre(link);
     }
 
     private getPageType() {

@@ -45,15 +45,6 @@ function onYearFilterChange (event) {
     window.postMessage(data, '*')
 }
 
-function onGenreFilterChange (event) {
-    var data = {
-        type: 'TridentGenre',
-        text: event.target.value
-    }
-
-    window.postMessage(data, '*')
-}
-
 function onNextAlbumBtnClick (event) {
     var data = {
         type: 'NextAlbum'
@@ -138,34 +129,19 @@ function createYearFilterBox() {
     return box
 }
 
-function createGenreFilterBox() {
-    var box = document.createElement('input')
-    box.style.width = '4em'
-    box.type = 'text'
-    box.style.display = 'block'
-    box.style.float = 'left'
-    box.id = 'genre-filter'
-    box.onchange = onGenreFilterChange
-    return box
-}
-
 function insertFilterBoxes() {
     var container = document.createElement('div')
     container.id = 'trident-controls'
     var lblMinScore = makeLabel('min score:')
     var lblMinYear = makeLabel('min year:')
-    var lblGenre = makeLabel('genre:')
     var scoreBox = createScoreFilterBox()
     var boxMinYear = createYearFilterBox()
-    var boxGenre = createGenreFilterBox()
     var navs = document.getElementsByClassName('primary-nav')
     var nav = navs[navs.length - 1]
     container.appendChild(lblMinScore)
     container.appendChild(scoreBox)
     container.appendChild(lblMinYear)
     container.appendChild(boxMinYear)
-    container.appendChild(lblGenre)
-    container.appendChild(boxGenre)
     nav.appendChild(container)
 }
 
