@@ -4,6 +4,7 @@ import {PageType} from "./PageType";
 import {Review} from "./Review";
 import {UiEventMonitor} from "./UiEventMonitor";
 import {DomUtils} from "./DomUtils";
+import { YouTubeClient } from "./YouTubeClient";
 export class Trident {
     public minScore: number;
     public minYear: number;
@@ -11,9 +12,9 @@ export class Trident {
     public publishedYear: number;
     public processed: { [link: string]: Review; };
     private config: TridentConfig = new TridentConfig();
-    private YT_BASE_URL: string = "https://www.googleapis.com/youtube/v3/search/";
     private eventMonitor: UiEventMonitor;
     private domUtils : DomUtils;
+    private youtubeClient: YouTubeClient = new YouTubeClient(this.config.youtubeApiKey);
 
     constructor() {
         const self = this;
@@ -169,10 +170,10 @@ export class Trident {
         const artist = artistLink.innerHTML;
         const headings = self.domUtils.parentsUntilClassContains(artistLink, 'headings')
         const album = headings.children[1].innerHTML;
-        const query = self.makeQueryObject(album + " " + artist);
+        const query = album + " " + artist;
         $("#player").remove();
         self.createPlayer();
-        self.getDataFromApi(query, (apiData) => {
+        self.youtubeClient.search(query, (apiData) => {
             const searchResults = apiData;
             self.makePlayer(searchResults.items[0].id.videoId);
         });
@@ -220,24 +221,8 @@ export class Trident {
         document.body.appendChild(playerDiv);
     }
 
-    public getDataFromApi(query, callback) {
-        $.getJSON(this.YT_BASE_URL, query, callback);
-    }
-
     public firstPageLoad() {
         this.eventMonitor.initialDetect();
-    }
-
-    private makeQueryObject(searchTerm) {
-        const query = {
-            part: "snippet",
-            key: this.config.youtubeApiKey,
-            q: searchTerm,
-            maxResults: 6,
-            type: "video",
-        };
-
-        return query;
     }
 
     private insertPublishedYear(link, publishedYear) {
