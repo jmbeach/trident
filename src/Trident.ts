@@ -14,7 +14,7 @@ export class Trident {
     private config: TridentConfig = new TridentConfig();
     private eventMonitor: UiEventMonitor;
     private domUtils : DomUtils;
-    private youtubeClient: YouTubeClient = new YouTubeClient();
+    private youtubeClient: YouTubeClient = new YouTubeClient(this.config.youtubeApiKey);
 
     constructor() {
         const self = this;
@@ -170,7 +170,7 @@ export class Trident {
         const artist = artistLink.innerHTML;
         const headings = self.domUtils.parentsUntilClassContains(artistLink, 'headings')
         const album = headings.children[1].innerHTML;
-        const query = self.makeQueryObject(album + " " + artist);
+        const query = album + " " + artist;
         $("#player").remove();
         self.createPlayer();
         self.youtubeClient.search(query, (apiData) => {
@@ -223,18 +223,6 @@ export class Trident {
 
     public firstPageLoad() {
         this.eventMonitor.initialDetect();
-    }
-
-    private makeQueryObject(searchTerm) {
-        const query = {
-            part: "snippet",
-            key: this.config.youtubeApiKey,
-            q: searchTerm,
-            maxResults: 6,
-            type: "video",
-        };
-
-        return query;
     }
 
     private insertPublishedYear(link, publishedYear) {
