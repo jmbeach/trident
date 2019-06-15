@@ -38,7 +38,7 @@ module.exports = {
                 to: 'background.js'
             },
             {
-                from: 'src/config/config.json',
+                from: 'config/config.json',
                 to: 'config/config.json'
             },
             {
