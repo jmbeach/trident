@@ -1,0 +1,27 @@
+﻿{
+  "manifest_version": 2,
+  "name": "Trident",
+  "version": "0.1.2",
+  "content_scripts": [
+    {
+      "js": [
+        "js/vendor.js",
+        "js/content_script.js",
+        "js/lib/youtube-iframe-api/youtube.iframe-api.js"
+      ],
+      "matches": ["*://*.pitchfork.com/*"]
+    }
+  ],
+  "browser_action": {
+    "default_icon": "./images/small.png"
+  },
+  "background": {
+    "scripts":  ["js/background.js"]
+  },
+  "web_accessible_resources":[
+      "js/web_accessible.js"
+  ],
+  "permssions": [
+    "https://*/"
+  ]
+}

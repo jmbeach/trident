@@ -31,11 +31,11 @@ To build:
 4. Run `npm run-script build` or `npm run-script watch`
 
 The project requires that you specify a YouTube API key. To do so, create
-a file with contents like the following under `src/config/config.ts`
+a file with contents like the following under `src/config/config.json`
 
 ```js
-export class TridentConfig {
-    public youtubeApiKey: string = "<your-youtube-api-key>";
+{
+    "youtubeApiKey": "<your-youtube-api-key>"
 }
 ```
 

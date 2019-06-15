@@ -34,8 +34,28 @@ module.exports = {
         new webpack.IgnorePlugin(/^\.\/locale$/),
         new CopyPlugin([
             {
+                from: 'src/background.js',
+                to: 'background.js'
+            },
+            {
                 from: 'src/config/config.json',
                 to: 'config/config.json'
+            },
+            {
+                from: 'images',
+                to: '../images'
+            },
+            {
+                from: 'lib',
+                to: 'lib'
+            },
+            {
+                from: 'manifest.json',
+                to: '../manifest.json'
+            },
+            {
+                from: 'src/web_accessible.js',
+                to: 'web_accessible.js'
             }
         ])
     ]
