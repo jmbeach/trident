@@ -9,19 +9,25 @@
         "js/content_script.js",
         "js/lib/youtube-iframe-api/youtube.iframe-api.js"
       ],
-      "matches": ["*://*.pitchfork.com/*"]
+      "matches": [
+        "*://*.pitchfork.com/*"
+      ]
     }
   ],
   "browser_action": {
     "default_icon": "./images/small.png"
   },
   "background": {
-    "scripts":  ["js/background.js"]
+    "scripts": [
+      "js/background.js"
+    ]
   },
-  "web_accessible_resources":[
-      "js/web_accessible.js"
+  "web_accessible_resources": [
+    "config/config.json",
+    "js/content_script.js.map",
+    "js/web_accessible.js"
   ],
-  "permssions": [
+  "permissions": [
     "https://*/"
   ]
 }

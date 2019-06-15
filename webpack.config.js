@@ -11,8 +11,12 @@ module.exports = {
         vendor: ['jquery']
     },
     output: {
+        devtoolModuleFilenameTemplate: function (info) {
+            return "file:///" + encodeURI(info.absoluteResourcePath);
+        },
         path: path.join(__dirname, 'dist/js'),
-        filename: '[name].js'
+        filename: '[name].js',
+        sourceMapFilename: '[name].js.map'
     },
     module: {
         rules: [
@@ -39,7 +43,7 @@ module.exports = {
             },
             {
                 from: 'config/config.json',
-                to: 'config/config.json'
+                to: '../config/config.json'
             },
             {
                 from: 'images',

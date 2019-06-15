@@ -71,7 +71,7 @@ export class Trident {
             if (request.command === "refresh") {
                 self.findOnYouTube();
             } else if (request.command === 'youtube-search-response') {
-
+                self.onYouTubeSearchResponse(request.data);
             }
         });
     }
@@ -111,7 +111,6 @@ export class Trident {
     }
 
     public insertFilterBoxes() {
-        console.log('yo');
         if (this.getPageType() !== PageType.AllReviews || this.getPageType() !== PageType.Artist) {
             return;
         }
