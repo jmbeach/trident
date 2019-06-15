@@ -1,7 +1,9 @@
-var webpack = require('webpack')
-var path = require('path')
+const CopyPlugin = require('copy-webpack-plugin');
+const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
+    devtool: 'source-map',
     entry: {
         content_script: [
             path.join(__dirname, 'src/main.ts')
@@ -13,7 +15,7 @@ module.exports = {
         filename: '[name].js'
     },
     module: {
-        loaders: [
+        rules: [
             {
                 exclude: /node_modules/,
                 test: /.tsx?$/,
@@ -29,11 +31,12 @@ module.exports = {
         ]
     },
     plugins: [
-        new webpack.optimize.CommonsChunkPlugin({
-            name: 'vendor',
-            minChunks: Infinity
-        }),
-        
-        new webpack.IgnorePlugin(/^\.\/locale$/)
+        new webpack.IgnorePlugin(/^\.\/locale$/),
+        new CopyPlugin([
+            {
+                from: 'src/config/config.json',
+                to: 'config/config.json'
+            }
+        ])
     ]
 }

@@ -1,19 +1,15 @@
 import * as $ from "jquery";
-import {TridentConfig} from "./config/config";
 import {PageType} from "./PageType";
 import {Review} from "./Review";
 import {UiEventMonitor} from "./UiEventMonitor";
 import {DomUtils} from "./DomUtils";
-import { YouTubeClient } from "./YouTubeClient";
 export class Trident {
     public minScore: number;
     public minYear: number;
     public publishedYear: number;
     public processed: { [link: string]: Review; };
-    private config: TridentConfig = new TridentConfig();
     private eventMonitor: UiEventMonitor;
     private domUtils : DomUtils;
-    private youtubeClient: YouTubeClient = new YouTubeClient(this.config.youtubeApiKey);
 
     constructor() {
         const self = this;
@@ -72,8 +68,10 @@ export class Trident {
         });
 
         chrome.runtime.onMessage.addListener((request) => {
-            if (request.PF === "refresh") {
+            if (request.command === "refresh") {
                 self.findOnYouTube();
+            } else if (request.command === 'youtube-search-response') {
+
             }
         });
     }
@@ -113,7 +111,8 @@ export class Trident {
     }
 
     public insertFilterBoxes() {
-        if (this.getPageType() !== PageType.AllReviews) {
+        console.log('yo');
+        if (this.getPageType() !== PageType.AllReviews || this.getPageType() !== PageType.Artist) {
             return;
         }
 
@@ -162,10 +161,14 @@ export class Trident {
         const query = album + " " + artist;
         $("#player").remove();
         self.createPlayer();
-        self.youtubeClient.search(query, (apiData) => {
-            const searchResults = apiData;
-            self.makePlayer(searchResults.items[0].id.videoId);
-        });
+        chrome.runtime.sendMessage({
+            command: "youtube-search",
+            searchTerm: query
+        })
+    }
+
+    public onYouTubeSearchResponse(data) {
+        this.makePlayer(data.items[0].id.videoId);
     }
 
     public scrollToPreviousAlbum() {
@@ -356,7 +359,10 @@ export class Trident {
     private getPageType() {
         if (document.title === "New Albums & Music Reviews | Pitchfork") {
             return PageType.AllReviews;
+        } else if (document.URL.indexOf('/artists/') > -1) {
+            return PageType.Artist;
         }
+
         return PageType.Review;
     }
 }
