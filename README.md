@@ -1,8 +1,7 @@
 Trident [![Build status](https://travis-ci.org/jmbeach/trident.svg?branch=travis-setup)](https://travis-ci.org/jmbeach/trident)
 ==============
 
-Chrome extension which provides enhancements for the music review website
-[Pitchfork.com](https://pitchfork.com)
+Chrome extension which provides enhancements for the music review website [Pitchfork.com](https://pitchfork.com)
 
 # Features
 
@@ -27,8 +26,7 @@ To build:
 
 1. Clone the repository
 2. Run `npm install`
-3. Run `bower install`
-4. Run `npm run-script build` or `npm run-script watch`
+3. Run `npm run-script build` or `npm run-script watch`
 
 The project requires that you specify a YouTube API key. To do so, create
 a file with contents like the following under `src/config/config.json`
@@ -44,33 +42,24 @@ You can get a YouTube API key [here](https://console.developers.google.com/apis/
 # Run
 
 To use Trident, open the Chrome extensions menu and click *Load unpacked
-extension* and select the dist directory of this repo.
+extension* and select the `dist` directory of this repo.
 
 # Project Structure Notes
 
 The main project files which are intended to be edited exist in the `src`
 directory. These are the TypeScript files which
 [WebPack](https://webpack.js.org/) will output into the `dist` directory.
-However, for convenience, some files are tracked and modified directly in
-`dist`. They are:
-
-+ `dist/js/background.js`
-+ `dist/js/web_accessible.js`
-+ `dist/images`
-
-The reason for this is that these files are easier to modify as plain
-JavaScript and I'd rather that WebPack did not compile them.
+Files with the `.js` files are chrome-extension specific files and are copied to `dist`
+explicitly.
 
 The images which are actually displayed as part of the chrome extension
 are contained in there as well.
-
-Also, Bower installs dependent JavaScript libraries into `dist/js/lib`.
 
 # Roadmap
 
 - YouTube video loading
     + Display list of videos for search query
-    + Use spotify to get entire album if available and is user preference
+    + Use Spotify to get entire album if available and is user preference
     + Make loading more user-interactive as right now it doesn't request and
       it's not intuitive that it loads the furthest scrolled review.
         + For example, if you scroll back up the page, it should offer
@@ -84,4 +73,3 @@ Also, Bower installs dependent JavaScript libraries into `dist/js/lib`.
 - Better Icon Art
     + Currently just have an icon of a pitchfork. Want a cool trident.
     + No icon for the large image yet.
-
