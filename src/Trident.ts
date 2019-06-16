@@ -122,7 +122,7 @@ export class Trident {
     }
 
     public insertFilterBoxes() {
-        if (this.getPageType() !== PageType.AllReviews && this.getPageType() !== PageType.Artist) {
+        if (this.eventMonitor.pageType !== PageType.AllReviews && this.eventMonitor.pageType !== PageType.Artist) {
             return;
         }
 
@@ -130,7 +130,7 @@ export class Trident {
     }
 
     public insertReviewControls() {
-        if (this.getPageType() !== PageType.Review) {
+        if (this.eventMonitor.pageType !== PageType.Review) {
             return;
         }
 
@@ -264,7 +264,7 @@ export class Trident {
 
     private filterAlbum(link) {
         const album = document.querySelector("a[href=\"" + link + "\"]");
-        if (album.parentElement.style.display !== "none") {
+        if (album.parentElement.style && album.parentElement.style.display !== "none") {
             this.insertScript("filterAlbum('" + link + "')");
         }
     }
@@ -282,8 +282,9 @@ export class Trident {
 
     private unFilterAlbum(link) {
         const album = document.querySelector("a[href=\"" + link + "\"]");
-        if (album.parentElement.style.display !== "block"
-           && album.parentElement.style.display !== "") {
+        if (album.parentElement.style
+            && album.parentElement.style.display !== "block"
+            && album.parentElement.style.display !== "") {
             this.insertScript("unFilterAlbum('" + link + "')");
         }
     }
@@ -300,7 +301,7 @@ export class Trident {
 
         review.publishedDate.setProcessed();
         const publishedYearObject = page.querySelector(".single-album-tombstone__meta-year");
-        const publishedYearParts = publishedYearObject.innerHTML.split(" ");
+        const publishedYearParts = publishedYearObject.textContent.split(" ");
         const publishedYearString = publishedYearParts[publishedYearParts.length - 1];
         const publishedYear = parseInt(publishedYearString, 10);
 
@@ -373,15 +374,5 @@ export class Trident {
         } else {
             review.score.setUnfiltered();
         }
-    }
-
-    private getPageType() {
-        if (document.title === "New Albums & Music Reviews | Pitchfork") {
-            return PageType.AllReviews;
-        } else if (document.URL.indexOf('/artists/') > -1) {
-            return PageType.Artist;
-        }
-
-        return PageType.Review;
     }
 }
