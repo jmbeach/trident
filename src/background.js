@@ -7,7 +7,6 @@ chrome.browserAction.onClicked.addListener(function (tab) {
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (request.command === 'youtube-search') {
-        fetch('./config/config.json').then(function (data) {
         fetch('./config/config.json').then(function (response) {
             return response.json();
         }).then(function (data) {

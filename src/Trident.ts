@@ -1,4 +1,3 @@
-import * as $ from "jquery";
 import {PageType} from "./PageType";
 import {Review} from "./Review";
 import {UiEventMonitor} from "./UiEventMonitor";
@@ -18,6 +17,14 @@ export class Trident {
         self.processed = {};
         self.eventMonitor = new UiEventMonitor();
         self.domUtils = new DomUtils();
+        self.eventMonitor.onEnterArtist = () => {
+            setTimeout(() => {
+                self.insertFilterBoxes();
+                self.processed = {};
+                self.refreshCustomUi();
+            }, 200);
+        };
+
         self.eventMonitor.onEnterReview = () => {
             setTimeout(() => {
                 self.insertReviewControls();
@@ -31,6 +38,10 @@ export class Trident {
                 self.processed = {};
                 self.refreshCustomUi();
             }, 200);
+        };
+
+        self.eventMonitor.onExitArtist = () => {
+            self.destroyFilterControls();
         };
 
         self.eventMonitor.onExitReviewList = () => {
@@ -111,7 +122,7 @@ export class Trident {
     }
 
     public insertFilterBoxes() {
-        if (this.getPageType() !== PageType.AllReviews || this.getPageType() !== PageType.Artist) {
+        if (this.getPageType() !== PageType.AllReviews && this.getPageType() !== PageType.Artist) {
             return;
         }
 
@@ -158,7 +169,12 @@ export class Trident {
         const headings = self.domUtils.parentsUntilClassContains(artistLink, 'headings')
         const album = headings.children[1].innerHTML;
         const query = album + " " + artist;
-        $("#player").remove();
+        let player = document.getElementById('player');
+        if (player !== null)
+        {
+            player.remove();
+        }
+
         self.createPlayer();
         chrome.runtime.sendMessage({
             command: "youtube-search",
@@ -247,8 +263,8 @@ export class Trident {
     }
 
     private filterAlbum(link) {
-        const album = $("a[href=\"" + link + "\"]");
-        if (album.parent()[0].style.display !== "none") {
+        const album = document.querySelector("a[href=\"" + link + "\"]");
+        if (album.parentElement.style.display !== "none") {
             this.insertScript("filterAlbum('" + link + "')");
         }
     }
@@ -265,9 +281,9 @@ export class Trident {
     }
 
     private unFilterAlbum(link) {
-        const album = $("a[href=\"" + link + "\"]");
-        if (album.parent()[0].style.display !== "block"
-           && album.parent()[0].style.display !== "") {
+        const album = document.querySelector("a[href=\"" + link + "\"]");
+        if (album.parentElement.style.display !== "block"
+           && album.parentElement.style.display !== "") {
             this.insertScript("unFilterAlbum('" + link + "')");
         }
     }
@@ -283,8 +299,8 @@ export class Trident {
         }
 
         review.publishedDate.setProcessed();
-        const publishedYearObject = page.find(".single-album-tombstone__meta-year").first();
-        const publishedYearParts = publishedYearObject.text().split(" ");
+        const publishedYearObject = page.querySelector(".single-album-tombstone__meta-year");
+        const publishedYearParts = publishedYearObject.innerHTML.split(" ");
         const publishedYearString = publishedYearParts[publishedYearParts.length - 1];
         const publishedYear = parseInt(publishedYearString, 10);
 
@@ -303,22 +319,26 @@ export class Trident {
     }
 
     private pageGetter(link, album, callback) {
-        $.get(link, (data) => {
-            callback(data, link, album);
+        fetch(link).then(function (response) {
+            return response.text();
+        }).then(function (data) {
+            const domParser = new DOMParser();
+            const body = domParser.parseFromString(data, "text/html").body;
+            callback(body, link, album);
         });
     }
 
     private foreachAlbumPage(callback) {
-        const albums = $(".review__link");
+        const albums = document.querySelectorAll(".review__link");
         for (let i = 0; i < albums.length; i++) {
-            const album = $(albums.get(i));
-            const link = album.attr("href");
+            const album = albums[i];
+            const link = album.getAttribute("href");
             if (typeof(this.processed[link]) !== "undefined") {
                 callback(link, album, null);
             }
 
             this.pageGetter(link, album, (data, cbLink, cbAlbum) => {
-                const page = $(data);
+                const page = data;
                 callback(cbLink, cbAlbum, page);
             });
         }
@@ -340,8 +360,8 @@ export class Trident {
         }
 
         review.score.setProcessed();
-        const $score = page.find(".score");
-        const score = parseFloat($score.text());
+        const $score = page.querySelector(".score");
+        const score = parseFloat($score.innerHTML);
         review.score.value = score;
         if (!review.score.isInserted) {
             review.score.setInserted();

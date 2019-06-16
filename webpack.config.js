@@ -7,13 +7,12 @@ module.exports = {
     entry: {
         content_script: [
             path.join(__dirname, 'src/main.ts')
-        ],
-        vendor: ['jquery']
+        ]
+    },
+    optimization: {
+        minimize: false,
     },
     output: {
-        devtoolModuleFilenameTemplate: function (info) {
-            return "file:///" + encodeURI(info.absoluteResourcePath);
-        },
         path: path.join(__dirname, 'dist/js'),
         filename: '[name].js',
         sourceMapFilename: '[name].js.map'

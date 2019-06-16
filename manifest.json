@@ -5,9 +5,9 @@
   "content_scripts": [
     {
       "js": [
-        "js/vendor.js",
         "js/content_script.js",
-        "js/lib/youtube-iframe-api/youtube.iframe-api.js"
+        "js/lib/youtube-iframe-api/youtube.iframe-api.js",
+        "js/vendor.js"
       ],
       "matches": [
         "*://*.pitchfork.com/*"
