@@ -1,5 +1,5 @@
-cat > src/config/config.ts << EOF
-export class TridentConfig {
-    public youtubeApiKey: string = "example-api-key";
+cat > config/config.json << EOF
+{
+    "youtubeApiKey": "example-api-key"
 }
 EOF
