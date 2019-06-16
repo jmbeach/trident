@@ -1,5 +1,7 @@
 import * as $ from "jquery";
 export class UiEventMonitor {
+    public onEnterArtist: () => void;
+    public onExitArtist: () => void;
     public onEnterReviewList: () => void;
     public onExitReviewList: () => void;
     public onEnterReview: () => void;
@@ -24,11 +26,11 @@ export class UiEventMonitor {
     }
 
     public initialDetect() {
-        if (this.didEnterReview()) {
+        if (this.didEnterArtist()) {
+            this.onEnterArtist();
+        } else if (this.didEnterReview()) {
             this.onEnterReview();
-        }
-
-        if (this.didEnterReviewList()) {
+        } if (this.didEnterReviewList()) {
             this.onEnterReviewList();
         }
     }
@@ -40,22 +42,22 @@ export class UiEventMonitor {
                 return;
             }
 
-            if (self.didEnterReview()) {
+            if (self.didEnterArtist()) {
+                self.onEnterArtist();
+            } if (self.didEnterReview()) {
                 self.onEnterReview();
+            } else if (self.didEnterReviewList()) {
+                self.onEnterReviewList();
             }
-
-            if (self.didExitReview()) {
+            
+            if (self.didExitReviewList()) {
+                self.onExitReviewList();
+            } else if (self.didExitReview()) {
                 if (self.onExitReview) {
                     self.onExitReview();
                 }
-            }
-
-            if (self.didEnterReviewList()) {
-                self.onEnterReviewList();
-            }
-
-            if (self.didExitReviewList()) {
-                self.onExitReviewList();
+            } else if (self.didExitArtist()) {
+                self.onExitArtist();
             }
 
             self.updateCurrentLocation();
@@ -73,6 +75,11 @@ export class UiEventMonitor {
         this.currentLocation = window.location.href;
     }
 
+    private didEnterArtist() {
+        const matches = window.location.href.match(/artists\/.+\//g);
+        return matches && matches.length > 0;
+    }
+    
     private didEnterReview() {
         // new location contains something after reviews/albums
         const matches = window.location.href.match(/reviews\/albums\/.+\//g);
@@ -82,6 +89,11 @@ export class UiEventMonitor {
     private didEnterReviewList() {
         // new location contains nothing after reviews/albums
         const matches = window.location.href.match(/(reviews\/albums\/$)|(reviews\/albums\/\?page.+)/g);
+        return matches && matches.length > 0;
+    }
+
+    private didExitArtist() {
+        const matches = this.currentLocation.match(/artists\/.+\//g);
         return matches && matches.length > 0;
     }
 
