@@ -335,7 +335,7 @@ export class Trident {
             const album = albums[i];
             const link = album.getAttribute("href");
             if (typeof(this.processed[link]) !== "undefined") {
-                callback(link, album, null);
+                continue;
             }
 
             this.pageGetter(link, album, (data, cbLink, cbAlbum) => {

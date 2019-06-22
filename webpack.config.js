@@ -13,8 +13,11 @@ module.exports = {
         minimize: false,
     },
     output: {
-        path: path.join(__dirname, 'dist/js'),
+        devtoolModuleFilenameTemplate: function (info) {
+            return "file:///" + info.absoluteResourcePath;
+        },
         filename: '[name].js',
+        path: path.join(__dirname, 'dist/js'),
         sourceMapFilename: '[name].js.map'
     },
     module: {

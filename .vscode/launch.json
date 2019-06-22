@@ -7,13 +7,17 @@
         {
             "type": "chrome",
             "request": "launch",
+            "trace": true,
             "name": "Launch Chrome against localhost",
             "url": "https://pitchfork.com/reviews/albums/",
-            "webRoot": "${workspaceFolder}",
+            "webRoot": "${workspaceRoot}",
             "runtimeArgs": [
                 "--load-extension=${workspaceFolder}\\dist"
             ],
-            "sourceMaps": true
+            "sourceMaps": true,
+            "sourceMapPathOverrides": {
+                "webpack:///*": "/*"
+            }
         }
     ]
 }
