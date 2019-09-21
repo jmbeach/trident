@@ -88,7 +88,6 @@ function createPreviousAlbumButton() {
     button.setAttribute('type', 'button')
     button.value = '<'
     button.style.position = 'fixed'
-    box.style.marginLeft = '5px'
     button.style.right = '1.5em'
     button.style.width = '1.5em'
     button.style.height = '1.2em'
