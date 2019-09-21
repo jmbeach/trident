@@ -10,7 +10,7 @@
     "@types/chrome": "0.0.52",
     "@types/youtube": "0.0.31",
     "copy-webpack-plugin": "^5.0.3",
-    "eslint": "^4.5.0",
+    "eslint": "^4.18.2",
     "raw-loader": "^3.0.0",
     "ts-loader": "^6.0.2",
     "tslint": "^5.8.0",
