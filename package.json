@@ -6,12 +6,8 @@
   "directories": {
     "lib": "lib"
   },
-  "dependencies": {
-    "jquery": "^3.2.1"
-  },
   "devDependencies": {
     "@types/chrome": "0.0.52",
-    "@types/jquery": "^3.2.16",
     "@types/youtube": "0.0.31",
     "copy-webpack-plugin": "^5.0.3",
     "eslint": "^4.5.0",

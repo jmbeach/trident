@@ -1,4 +1,4 @@
-import * as $ from "jquery";
+import { PageType } from "./PageType";
 export class UiEventMonitor {
     public onEnterArtist: () => void;
     public onExitArtist: () => void;
@@ -6,6 +6,7 @@ export class UiEventMonitor {
     public onExitReviewList: () => void;
     public onEnterReview: () => void;
     public onExitReview: () => void;
+    public pageType: PageType;
 
     private currentLocation: string;
 
@@ -20,8 +21,10 @@ export class UiEventMonitor {
             self.detectChanges();
         };
 
-        $(selector).click(() => {
-            self.detectChanges();
+        document.querySelectorAll(selector).forEach(el => {
+            el.onclick = () => {
+                self.detectChanges();
+            };
         });
     }
 
@@ -81,30 +84,44 @@ export class UiEventMonitor {
     }
     
     private didEnterReview() {
-        // new location contains something after reviews/albums
-        const matches = window.location.href.match(/reviews\/albums\/.+\//g);
-        return matches && matches.length > 0;
+        const matches = window.location.href.match(/reviews\/albums\/.+\/(\?.+)?/g);
+        const didEnter = matches && matches.length > 0;
+        if (didEnter)
+        {
+            this.pageType = PageType.Review;
+        }
+
+        return didEnter;
     }
 
     private didEnterReviewList() {
-        // new location contains nothing after reviews/albums
-        const matches = window.location.href.match(/(reviews\/albums\/$)|(reviews\/albums\/\?page.+)/g);
-        return matches && matches.length > 0;
+        const matches = window.location.href.match(/(reviews\/albums\/$)|(reviews\/albums\/\?.+)/g);
+        const didEnter = matches && matches.length > 0;
+        if (didEnter)
+        {
+            this.pageType = PageType.AllReviews;
+        }
+
+        return didEnter;
     }
 
     private didExitArtist() {
         const matches = this.currentLocation.match(/artists\/.+\//g);
-        return matches && matches.length > 0;
+        const didEnter = matches && matches.length > 0;
+        if (didEnter)
+        {
+            this.pageType = PageType.Artist;
+        }
+
+        return didEnter;
     }
 
     private didExitReviewList() {
-        // old location contains nothing after reviews/albums
-        const matches = this.currentLocation.match(/(reviews\/albums\/$)|(reviews\/albums\/\?page.+)/g);
+        const matches = this.currentLocation.match(/(reviews\/albums\/$)|(reviews\/albums\/\?.+)/g);
         return matches && matches.length > 0;
     }
 
     private didExitReview() {
-        // old location contains something after reviews/albums
         const matches = this.currentLocation.match(/reviews\/albums\/.+\//g);
         return matches && matches.length > 0;
     }
