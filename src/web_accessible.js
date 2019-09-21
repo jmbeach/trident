@@ -1,3 +1,5 @@
+const storageKeyTridentPfMinScore = 'tridentpf-min-score'
+const storageKeyTridentPfMinYear = 'tridentpf-min-year'
 function onPlayerReady(event) {
     event.target.playVideo()
     setTimeout(function() {
@@ -19,10 +21,7 @@ function makePlayer(id) {
 function makeLabel(txt) {
     var label = document.createElement('span')
     label.style.color = 'white'
-    label.style.float = 'left'
-    label.style.marginTop = '.7em'
-    label.style.marginRight = '1em'
-    label.style.marginLeft = '1em'
+    label.style.marginLeft = '10px'
     label.innerHTML = txt
     return label
 }
@@ -33,6 +32,8 @@ function onScoreFilterChange (event) {
         text: event.target.value
     }
 
+    localStorage.setItem(storageKeyTridentPfMinScore, event.target.value)
+
     window.postMessage(data, '*')
 }
 
@@ -41,6 +42,8 @@ function onYearFilterChange (event) {
         type: 'TridentYear',
         text: event.target.value
     }
+
+    localStorage.setItem(storageKeyTridentPfMinYear, event.target.value)
 
     window.postMessage(data, '*')
 }
@@ -101,22 +104,36 @@ function createPreviousAlbumButton() {
 
 function createScoreFilterBox() {
     var box = document.createElement('input')
-    box.style.width = '4em'
+    box.style.width = '33px'
+    box.style.paddingLeft = '4px'
+    box.style.border = '1px solid black'
+    box.style.borderRadius = '4px'
+    box.style.marginLeft = '5px'
     box.type = 'number'
     box.style.display = 'block'
-    box.style.float = 'left'
     box.id = 'score-filter'
     box.step = '0.5'
     box.max = '10'
     box.min = '0'
-    box.value = '7.0'
+    let minScore = localStorage.getItem(storageKeyTridentPfMinScore)
+    if (!minScore)
+    {
+        minScore = '7.0'
+        localStorage.setItem(storageKeyTridentPfMinScore, minScore)
+    }
+
+    box.value = minScore
     box.onchange = onScoreFilterChange
     return box
 }
 
 function createYearFilterBox() {
     var box = document.createElement('input')
-    box.style.width = '4em'
+    box.style.width = '44px'
+    box.style.paddingLeft = '4px'
+    box.style.marginLeft = '5px'
+    box.style.border = '1px solid black'
+    box.style.borderRadius = '4px'
     box.type = 'number'
     box.style.display = 'block'
     box.style.float = 'left'
@@ -124,7 +141,14 @@ function createYearFilterBox() {
     box.step = '1'
     box.max = (new Date()).getFullYear() + 1
     box.min = '1900'
-    box.value = (new Date()).getFullYear() - 1
+    let minYear = localStorage.getItem(storageKeyTridentPfMinYear)
+    if (!minYear)
+    {
+        minYear = (new Date()).getFullYear() - 1
+        localStorage.setItem(storageKeyTridentPfMinYear, minYear)
+    }
+
+    box.value = minYear
     box.onchange = onYearFilterChange
     return box
 }
@@ -132,6 +156,10 @@ function createYearFilterBox() {
 function insertFilterBoxes() {
     var container = document.createElement('div')
     container.id = 'trident-controls'
+    container.style.display = 'flex'
+    container.style.justifyContent = 'flex-start'
+    container.style.alignItems = 'center'
+    container.style.paddingBottom = '5px'
     var lblMinScore = makeLabel('min score:')
     var lblMinYear = makeLabel('min year:')
     var scoreBox = createScoreFilterBox()
