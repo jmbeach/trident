@@ -166,6 +166,10 @@ function insertFilterBoxes() {
     var boxMinYear = createYearFilterBox()
     var navs = document.getElementsByClassName('primary-nav')
     var nav = navs[navs.length - 1]
+    if (!nav) {
+        return
+    }
+
     container.appendChild(lblMinScore)
     container.appendChild(scoreBox)
     container.appendChild(lblMinYear)
@@ -190,6 +194,10 @@ function insertPublishedYear(link, publishedYear) {
 
 function insertScore(link, score) {
     var album = document.querySelector('.review__link[href*="' + link + '"]')
+    if (!album) {
+        return
+    }
+    
     var scoreToInsert = document.createElement('span')
     scoreToInsert.classList.add('pub-date', 'actual-date')
     scoreToInsert.innerHTML = 'Score: ' + score
@@ -217,7 +225,12 @@ function scrollToBottom() {
     window.scroll(0, container.scrollHeight)
     setTimeout(function() {
       var links = document.querySelectorAll('.artist-links > li:first-child > a');
-      var latest = links[links.length - 1]
+      let latestLink = links[links.length - 1]
+      if (!latestLink) {
+        return
+      }
+
+      var latest = latestLink
         .parentElement
         .parentElement
         .parentElement

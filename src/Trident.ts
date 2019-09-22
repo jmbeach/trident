@@ -29,6 +29,7 @@ export class Trident {
             setTimeout(() => {
                 self.insertReviewControls();
                 self.findOnYouTube();
+                self.eventMonitor.bindClick("a");
             }, 800);
         };
 

@@ -23,7 +23,10 @@ export class UiEventMonitor {
         window.addEventListener('resize', function (ev) {
             if (window.innerWidth < desktopMinWidth && !self.isMobileDevice) {
                 self.isMobileDevice = true;
-                self.onEnterMobileDeviceSize();
+                if (self.onEnterMobileDeviceSize)
+                {
+                    self.onEnterMobileDeviceSize();
+                }
             }
             else if (window.innerWidth >= desktopMinWidth && self.isMobileDevice) {
                 self.isMobileDevice = false;
