@@ -40,6 +40,12 @@ export class Trident {
             }, 200);
         };
 
+        self.eventMonitor.onEnterDesktopDeviceSize = () => {
+            setTimeout(() => {
+                self.insertFilterBoxes();
+            }, 200);
+        };
+
         self.eventMonitor.onExitArtist = () => {
             self.destroyFilterControls();
         };
