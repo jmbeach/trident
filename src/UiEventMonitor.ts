@@ -6,13 +6,30 @@ export class UiEventMonitor {
     public onExitReviewList: () => void;
     public onEnterReview: () => void;
     public onExitReview: () => void;
+    public onEnterMobileDeviceSize: () => void;
+    public onEnterDesktopDeviceSize: () => void;
+    public isMobileDevice: boolean;
     public pageType: PageType;
 
     private currentLocation: string;
 
     constructor() {
-        this.currentLocation = window.location.href;
-        this.bindClick("a");
+        const self = this;
+        const desktopMinWidth = 768;
+        self.currentLocation = window.location.href;
+        self.bindClick("a");
+        
+        self.isMobileDevice = window.innerWidth < desktopMinWidth;
+        window.addEventListener('resize', function (ev) {
+            if (window.innerWidth < desktopMinWidth && !self.isMobileDevice) {
+                self.isMobileDevice = true;
+                self.onEnterMobileDeviceSize();
+            }
+            else if (window.innerWidth >= desktopMinWidth && self.isMobileDevice) {
+                self.isMobileDevice = false;
+                self.onEnterDesktopDeviceSize();
+            }
+        })
     }
 
     public bindClick(selector) {
