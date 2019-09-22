@@ -188,34 +188,28 @@ export class Trident {
 
     public scrollToPreviousAlbum() {
         const currentArtistLink = this.getCurrentArtistLink();
-        const artistLinks = document.querySelectorAll(".artist-links > li:first-child > a");
-        let previousArtistLink = currentArtistLink;
-        for (let i = 0; i < artistLinks.length; i++) {
-            if (artistLinks[i] === currentArtistLink && i != 0) {
-                previousArtistLink = artistLinks[i - 1];
-            }
+        const artistLinks = Array.from(document.querySelectorAll(".artist-links > li:first-child > a"));
+        let currentIndex = artistLinks.indexOf(currentArtistLink);
+        if (currentIndex === 0)
+        {
+            return;
         }
-
-        this.domUtils.parentsUntilClass(previousArtistLink, "review-detail").scrollIntoView();
+        else
+        {
+            this.domUtils.parentsUntilClass(artistLinks[currentIndex - 1], "review-detail").scrollIntoView();
+        }
     }
 
     public scrollToNextAlbum() {
         const currentArtistLink = this.getCurrentArtistLink();
-        const artistLinks = document.querySelectorAll(".artist-links > li:first-child > a");
-        let nextArtistLink = currentArtistLink;
-        for (let i = 0; i < artistLinks.length; i++) {
-            if (artistLinks[i] === currentArtistLink) {
-                if (artistLinks.length - 1 !== i) {
-                    nextArtistLink = artistLinks[i + 1];
-                }
-            }
-        }
+        const artistLinks = Array.from(document.querySelectorAll(".artist-links > li:first-child > a"));
+        let currentIndex = artistLinks.indexOf(currentArtistLink);
 
         // if we haven't loaded the next artist link yet
-        if (currentArtistLink === nextArtistLink) {
+        if (artistLinks.length - 1 <= currentIndex) {
             this.scrollToBottom();
         } else {
-            this.domUtils.parentsUntilClass(nextArtistLink, "review-detail").scrollIntoView();
+            this.domUtils.parentsUntilClass(artistLinks[currentIndex + 1], "review-detail").scrollIntoView();
         }
     }
 
