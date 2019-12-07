@@ -12,8 +12,8 @@ export class Trident {
 
     constructor() {
         const self = this;
-        self.minScore = 7.0;
-        self.minYear = new Date().getFullYear() - 1;
+        self.minScore = this.getMinScoreFromStorage() || 7.0;
+        self.minYear = this.getMinYearFromStorage() || new Date().getFullYear() - 1;
         self.processed = {};
         self.eventMonitor = new UiEventMonitor();
         self.domUtils = new DomUtils();
@@ -187,6 +187,24 @@ export class Trident {
             command: "youtube-search",
             searchTerm: query
         })
+    }
+
+    getMinScoreFromStorage(): number {
+        const fromStorage = localStorage.getItem('tridentpf-min-score');
+        if (fromStorage) {
+            return Number.parseFloat(fromStorage);
+        }
+
+        return null;
+    }
+
+    getMinYearFromStorage(): number {
+        const fromStorage = localStorage.getItem('tridentpf-min-year');
+        if (fromStorage) {
+            return Number.parseFloat(fromStorage);
+        }
+
+        return null;
     }
 
     public onYouTubeSearchResponse(data) {
