@@ -12,8 +12,8 @@ export class Trident {
 
     constructor() {
         const self = this;
-        self.minScore = 7.0;
-        self.minYear = new Date().getFullYear() - 1;
+        self.minScore = this.getMinScoreFromStorage() || 7.0;
+        self.minYear = this.getMinYearFromStorage() || new Date().getFullYear() - 1;
         self.processed = {};
         self.eventMonitor = new UiEventMonitor();
         self.domUtils = new DomUtils();
@@ -189,6 +189,24 @@ export class Trident {
         })
     }
 
+    getMinScoreFromStorage(): number {
+        const fromStorage = localStorage.getItem('tridentpf-min-score');
+        if (fromStorage) {
+            return Number.parseFloat(fromStorage);
+        }
+
+        return null;
+    }
+
+    getMinYearFromStorage(): number {
+        const fromStorage = localStorage.getItem('tridentpf-min-year');
+        if (fromStorage) {
+            return Number.parseFloat(fromStorage);
+        }
+
+        return null;
+    }
+
     public onYouTubeSearchResponse(data) {
         this.makePlayer(data.items[0].id.videoId);
     }
@@ -271,7 +289,7 @@ export class Trident {
     }
 
     private markAllUnprocessed(processedItems) {
-        for (const i of processedItems) {
+        for (let i in processedItems) {
             const item = processedItems[i];
             item.setUnprocessed();
         }
@@ -335,7 +353,7 @@ export class Trident {
         for (let i = 0; i < albums.length; i++) {
             const album = albums[i];
             const link = album.getAttribute("href");
-            if (typeof(this.processed[link]) !== "undefined") {
+            if (typeof(this.processed[link]) !== "undefined" && this.processed[link].score.isProcessed === true) {
                 continue;
             }
 
