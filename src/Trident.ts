@@ -271,7 +271,7 @@ export class Trident {
     }
 
     private markAllUnprocessed(processedItems) {
-        for (const i of processedItems) {
+        for (let i in processedItems) {
             const item = processedItems[i];
             item.setUnprocessed();
         }
@@ -335,7 +335,7 @@ export class Trident {
         for (let i = 0; i < albums.length; i++) {
             const album = albums[i];
             const link = album.getAttribute("href");
-            if (typeof(this.processed[link]) !== "undefined") {
+            if (typeof(this.processed[link]) !== "undefined" && this.processed[link].score.isProcessed === true) {
                 continue;
             }
 
