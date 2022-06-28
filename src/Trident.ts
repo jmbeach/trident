@@ -146,35 +146,15 @@ export class Trident {
 
     public getCurrentArtistLink() {
         const self = this;
-        const artists = document.querySelectorAll(".artist-links a");
-        let artistLink = artists[0]
-        for (let i = 0; i < artists.length; i++) {
-            const link = artists[i];
-            const reviewClass = "review-detail";
-            const linkView = self.domUtils.parentsUntilClass(
-                link,
-                reviewClass)
-                .getBoundingClientRect();
-            const artistView = self.domUtils.parentsUntilClass(
-                artistLink,
-                reviewClass)
-                .getBoundingClientRect()
-
-            // top is closest to zero
-            if (Math.abs(linkView.top) < Math.abs(artistView.top)) {
-                artistLink = link
-            }
-        }
-
-        return artistLink;
+        const artists = document.querySelectorAll("[class*=ArtistLink]");
+        return artists[0];
     }
 
     public findOnYouTube() {
         const self = this;
         const artistLink = self.getCurrentArtistLink();
-        const artist = artistLink.innerHTML;
-        const headings = self.domUtils.parentsUntilClassContains(artistLink, 'headings')
-        const album = headings.children[1].innerHTML;
+        const artist = artistLink.textContent;
+        const album = document.querySelector('[data-testid=ContentHeaderHed]').textContent;
         const query = album + " " + artist;
         let player = document.getElementById('player');
         if (player !== null)
@@ -380,8 +360,8 @@ export class Trident {
         }
 
         review.score.setProcessed();
-        const $score = page.querySelector(".score");
-        const score = parseFloat($score.innerHTML);
+        const $score = page.querySelector('[class*=ScoreCircle]');
+        const score = parseFloat($score.textContent);
         review.score.value = score;
         if (!review.score.isInserted) {
             review.score.setInserted();

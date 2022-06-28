@@ -178,9 +178,9 @@ function insertFilterBoxes() {
 }
 
 function insertReviewControls() {
-    var container = document.getElementsByClassName('infinite-container')
-    container[0].children[0].appendChild(createNextAlbumButton())
-    container[0].children[0].appendChild(createPreviousAlbumButton())
+    var container = document.querySelector('[class*=BasePageWrapper]')
+    container.children[0].appendChild(createNextAlbumButton())
+    container.children[0].appendChild(createPreviousAlbumButton())
 }
 
 function insertPublishedYear(link, publishedYear) {
