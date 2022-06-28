@@ -299,7 +299,7 @@ export class Trident {
         }
 
         review.publishedDate.setProcessed();
-        const publishedYearObject = page.querySelector(".single-album-tombstone__meta-year");
+        const publishedYearObject = page.querySelector("[class*=ReleaseYear]");
         const publishedYearParts = publishedYearObject.textContent.split(" ");
         const publishedYearString = publishedYearParts[publishedYearParts.length - 1];
         const publishedYear = parseInt(publishedYearString, 10);
